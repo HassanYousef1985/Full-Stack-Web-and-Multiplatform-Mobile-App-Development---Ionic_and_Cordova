@@ -7,6 +7,8 @@ import { ProcessHttpmsgProvider } from '../process-httpmsg/process-httpmsg';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/catch';
+import { map, catchError } from 'rxjs/operators';
+
 /*
   Generated class for the DishProvider provider.
 
@@ -29,8 +31,10 @@ export class DishProvider {
   }
 
   getFeaturedDish(): Observable<Dish> {
-    return this.http.get(baseURL + 'dishes?featured=true')
-                    .catch(error => { return this.processHTTPMsgService.handleError(error); });
+    return this.http.get<Dish[]>(baseURL + 'dishes?featured=true').pipe(map(dishes => dishes[0]))
+    .pipe(catchError(this.processHTTPMsgService.handleError));
+
+   
   }
 
 

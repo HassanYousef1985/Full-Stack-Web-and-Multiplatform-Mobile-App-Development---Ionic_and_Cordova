@@ -7,6 +7,7 @@ import { ProcessHttpmsgProvider } from '../process-httpmsg/process-httpmsg';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/catch';
+import { map, catchError } from 'rxjs/operators';
 
 /*
   Generated class for the PromotionProvider provider.
@@ -30,8 +31,10 @@ export class PromotionProvider {
   }
 
   getFeaturedPromotion(): Observable<Promotion> {
-    return this.http.get(baseURL + 'promotions?featured=true')
-                    .catch(error => { return this.processHTTPMsgService.handleError(error); });
+    return this.http.get<Promotion[]>(baseURL + 'promotions?featured=true').pipe(map(promotions => promotions[0]))
+    .pipe(catchError(this.processHTTPMsgService.handleError));
+
+  
   }
 
 }

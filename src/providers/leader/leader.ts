@@ -7,6 +7,7 @@ import { ProcessHttpmsgProvider } from '../process-httpmsg/process-httpmsg';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/catch';
+import { map, catchError } from 'rxjs/operators';
 
 
 /*
@@ -31,8 +32,10 @@ export class LeaderProvider {
   }
 
   getFeaturedLeader(): Observable<Leader> {
-    return this.http.get(baseURL + 'leaders?featured=true')
-                    .catch(error => { return this.processHTTPMsgService.handleError(error); });
+    return this.http.get<Leader[]>(baseURL + 'leaders?featured=true').pipe(map(leaders => leaders[0]))
+    .pipe(catchError(this.processHTTPMsgService.handleError));
+
+  
   }
 
 }
